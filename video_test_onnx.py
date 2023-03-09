@@ -24,8 +24,8 @@ def main(input_video: str, output_video: str, init_box: str, platform: str):
     while True:
         ret, img = cap.read()
 
-        # if idx > 300:
-        #     break
+        if idx > 300:
+            break
 
         if img is None:
             break
