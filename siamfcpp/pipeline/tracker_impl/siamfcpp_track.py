@@ -182,6 +182,7 @@ class SiamFCppTracker(PipelineBase):
             window = np.ones((score_size, score_size))
         else:
             window = np.ones((score_size, score_size))
+    
 
         self._state['z_crop'] = im_z_crop
         self._state['avg_chans'] = avg_chans
@@ -351,6 +352,7 @@ class SiamFCppTracker(PipelineBase):
         # ipdb.set_trace()
         # cos window (motion model)
         window_influence = self._hyper_params['window_influence']
+        
         pscore = pscore * (
             1 - window_influence) + self._state['window'] * window_influence
         best_pscore_id = np.argmax(pscore)

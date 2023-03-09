@@ -98,7 +98,6 @@ class SiamTrack(ModuleBase):
             # template as kernel
             c_z_k = self.c_z_k(f_z)
             r_z_k = self.r_z_k(f_z)
-            # output
             out_list = [c_z_k, r_z_k]
 
         elif phase == 'track':
@@ -130,6 +129,7 @@ class SiamTrack(ModuleBase):
             # register extra output
             extra = dict(c_x=c_x, r_x=r_x, corr_fea=corr_fea)
             # output
+            
             out_list = fcos_score_final, fcos_bbox_final, fcos_cls_prob_final, fcos_ctr_prob_final, extra
         else:
             raise ValueError("Phase non-implemented.")

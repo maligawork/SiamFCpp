@@ -1,0 +1,11 @@
+CUDA: True
+ONNX_BACKBONE_INIT: 'models/onnx/backbone_init.onnx'
+ONNX_BACKBONE: 'models/onnx/backbone.onnx'
+ONNX_HEAD: 'models/onnx/head.onnx'
+
+# ONNX_BACKBONE_INIT: 'models/fff/backbone_init.onnx'
+# ONNX_BACKBONE: 'models/fff/backbone.onnx'
+# ONNX_HEAD: 'models/fff/head.onnx'
+
+
+
