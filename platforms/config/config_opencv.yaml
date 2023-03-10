@@ -1,0 +1,7 @@
+OPENCV_BACKBONE_INIT: 'models/onnx_static/backbone_init.onnx'
+OPENCV_BACKBONE: 'models/onnx_static/backbone.onnx'
+OPENCV_HEAD: 'models/onnx_static/head_one.onnx'
+
+
+
+
