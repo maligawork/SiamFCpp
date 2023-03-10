@@ -13,7 +13,7 @@ from platforms.tracker.tracker_builder import build_tracker
 from siamfcpp.model.common_opr.common_block import xcorr_depthwise
 
 
-class ModelBuilder():
+class ModelBuilder:
     def __init__(self):
         super(ModelBuilder, self).__init__()
 
