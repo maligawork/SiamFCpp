@@ -39,14 +39,14 @@ class ModelBuilder:
         return 1 / (1 + np.exp(-x))
 
     def template(self, z):
-        c_z_k, r_z_k = run_ksnn(self.backbone_init, z)
+        c_z_k, r_z_k = run_ksnn(self.backbone_init, z, output_tensor=2)
         c_z_k = c_z_k.reshape(1, 256, 4, 4).astype(np.float32)
         r_z_k = r_z_k.reshape(1, 256, 4, 4).astype(np.float32)
         self.c_z_k = c_z_k
         self.r_z_k = r_z_k
 
     def track(self, x):
-        c_x, r_x = run_ksnn(self.backbone, x)
+        c_x, r_x = run_ksnn(self.backbone, x, output_tensor=2)
         c_x = c_x.reshape(1, 256, 26, 26).astype(np.float32)
         r_x = r_x.reshape(1, 256, 26, 26).astype(np.float32)
 

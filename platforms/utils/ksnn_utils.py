@@ -13,9 +13,9 @@ def load_ksnn(main_folder, model_path, level=0):
     return model
 
 
-def run_ksnn(ksnn_model, input):
+def run_ksnn(ksnn_model, input, output_tensor=1):
     input = input[0].transpose(1, 2, 0)
-    outputs = ksnn_model.nn_inference([input], platform='ONNX', reorder='2 1 0',
+    outputs = ksnn_model.nn_inference([input], platform='ONNX', output_tensor=output_tensor, reorder='2 1 0',
                                       output_format=output_format.OUT_FORMAT_FLOAT32)
     return outputs
 
