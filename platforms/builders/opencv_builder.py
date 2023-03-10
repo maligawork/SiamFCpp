@@ -9,6 +9,7 @@ import numpy as np
 
 from platforms.core.config import cfg
 from platforms.utils.opencv_utils import load_opencv, run_opencv
+from platforms.utils.onnx_utils import load_onnx, run_onnx
 from platforms.tracker.tracker_builder import build_tracker
 
 from siamfcpp.model.common_opr.common_block import xcorr_depthwise
@@ -29,9 +30,14 @@ class ModelBuilder:
         # self.target = cv2.dnn.DNN_TARGET_NPU
         self.target = cv2.dnn.DNN_TARGET_CPU
 
+        if cfg.CUDA:
+            provider = 'CUDAExecutionProvider'
+        else:
+            provider = 'CPUExecutionProvider'
+
         self.backbone_init = load_opencv(self.backbone_init_path, self.backend, self.target)
         self.backbone = load_opencv(self.backbone_path, self.backend, self.target)
-        self.ban_head = load_opencv(self.head_path, self.backend, self.target)
+        self.ban_head = load_onnx(self.head_path, provider)
 
     @staticmethod
     def sigmoid(x):
@@ -47,12 +53,11 @@ class ModelBuilder:
 
         c_out = xcorr_depthwise(torch.Tensor(c_x), torch.Tensor(self.c_z_k))
         r_out = xcorr_depthwise(torch.Tensor(r_x), torch.Tensor(self.r_z_k))
-        out = torch.cat([c_out, r_out], dim=1)
 
-        fcos_cls_score_final, fcos_ctr_score_final, fcos_bbox_final, corr_fea = run_opencv(self.ban_head,
-                                                                                           out.numpy(),
-                                                                                           ['csl_score', 'ctr_score',
-                                                                                            'bbox', 'fea'])
+        fcos_cls_score_final, fcos_ctr_score_final, fcos_bbox_final, corr_fea = run_onnx(self.ban_head,
+                                                                                         {'input1': c_out.numpy(),
+                                                                                          'input2': r_out.numpy()})
+
         fcos_cls_prob_final = self.sigmoid(fcos_cls_score_final)
         fcos_ctr_prob_final = self.sigmoid(fcos_ctr_score_final)
         fcos_score_final = fcos_cls_prob_final * fcos_ctr_prob_final

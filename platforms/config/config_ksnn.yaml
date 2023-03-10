@@ -1,0 +1,6 @@
+KSNN_MODELS_PATH : 'models/ksnn'
+KSNN_BACKBONE_INIT: 'backbone_init'
+KSNN_BACKBONE: 'backbone'
+ONNX_HEAD: 'models/onnx_static/head.onnx'
+
+
