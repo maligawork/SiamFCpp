@@ -27,7 +27,7 @@ class ModelBuilder:
         self.ksnn_models_path = cfg.KSNN_MODELS_PATH
         self.backbone_init_folder = cfg.KSNN_BACKBONE_INIT
         self.backbone_folder = cfg.KSNN_BACKBONE
-        self.head_folder = cfg.ONNX_HEAD
+        self.head_path = cfg.ONNX_HEAD
 
         self.backend = cv2.dnn.DNN_BACKEND_TIMVX
         # self.backend = cv2.dnn.DNN_BACKEND_DEFAULT
