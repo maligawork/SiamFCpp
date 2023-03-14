@@ -20,24 +20,16 @@ def run_ksnn(ksnn_model, input, output_tensor=1):
     return outputs
 
 
-def run_head(model, zf, xf):
-    zf_pad = F.pad(torch.tensor(zf), (4, 4, 4, 4), "constant", 0)
-    inp = torch.cat((zf_pad, torch.tensor(xf)), dim=0)
-    inp = inp.permute(1, 2, 0).numpy()
+def run_head(model, inp1, inp2):
+    inp1 = inp1[0].permute(1, 2, 0).numpy()
+    inp2 = inp2[0].permute(1, 2, 0).numpy()
 
-    outputs = model.nn_inference([inp], platform='ONNX', output_tensor=2, reorder='2 1 0',
+    outputs = model.nn_inference([inp1, inp2], platform='ONNX', output_tensor=4, reorder='2 1 0',
                                  output_format=output_format.OUT_FORMAT_FLOAT32)
-    outputs1 = outputs[0].reshape(1, 2, 16, 16)
-    outputs2 = outputs[1].reshape(1, 4, 16, 16)
-    return outputs1, outputs2
 
+    csl_score = outputs[0].reshape(1, 289, 1)
+    ctr_score = outputs[1].reshape(1, 289, 1)
+    offsets   = outputs[2].reshape(1, 4, 17, 17)
+    fea       = outputs[3].reshape(1, 256, 17, 17)
 
-def run2head(model, zf, xf):
-    zf = zf[0].transpose(1, 2, 0)
-    xf = xf[0].transpose(1, 2, 0)
-
-    outputs = model.nn_inference([zf, xf], platform='ONNX', input_tensor=2, output_tensor=2, reorder='2 1 0',
-                                 output_format=output_format.OUT_FORMAT_FLOAT32)
-    outputs1 = outputs[0].reshape(1, 2, 16, 16)
-    outputs2 = outputs[1].reshape(1, 4, 16, 16)
-    return outputs1, outputs2
+    return csl_score, ctr_score, offsets, fea

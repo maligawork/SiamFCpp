@@ -7,9 +7,10 @@ import torch
 import numpy as np
 
 from platforms.core.config import cfg
-from platforms.utils.onnx_utils import load_onnx, run_onnx
-from platforms.utils.ksnn_utils import load_ksnn, run_ksnn
+from platforms.utils.ksnn_utils import load_ksnn, run_ksnn, run_head
 from platforms.tracker.tracker_builder import build_tracker
+from siamfcpp.model.task_head_new.taskhead_impl.track_head import get_xy_ctr
+from siamfcpp.utils.box_utils import get_box_full
 
 from siamfcpp.model.common_opr.common_block import xcorr_depthwise
 
@@ -23,16 +24,12 @@ class ModelBuilder:
         self.ksnn_models_path = cfg.KSNN_MODELS_PATH
         self.backbone_init_folder = cfg.KSNN_BACKBONE_INIT
         self.backbone_folder = cfg.KSNN_BACKBONE
-        self.head_path = cfg.ONNX_HEAD
-
-        if cfg.CUDA:
-            provider = 'CUDAExecutionProvider'
-        else:
-            provider = 'CPUExecutionProvider'
+        self.head_folder = cfg.KSNN_HEAD
 
         self.backbone_init = load_ksnn(self.ksnn_models_path, self.backbone_init_folder)
         self.backbone = load_ksnn(self.ksnn_models_path, self.backbone_folder)
-        self.ban_head = load_onnx(self.head_path, provider)
+        self.ban_head = load_ksnn(self.ksnn_models_path, self.head_folder)
+        self.ctr = get_xy_ctr(cfg.score_size, cfg.score_offset, cfg.total_stride)
 
     @staticmethod
     def sigmoid(x):
@@ -53,9 +50,11 @@ class ModelBuilder:
         c_out = xcorr_depthwise(torch.Tensor(c_x), torch.Tensor(self.c_z_k))
         r_out = xcorr_depthwise(torch.Tensor(r_x), torch.Tensor(self.r_z_k))
 
-        fcos_cls_score_final, fcos_ctr_score_final, fcos_bbox_final, corr_fea = run_onnx(self.ban_head,
-                                                                                         {'input1': c_out.numpy(),
-                                                                                          'input2': r_out.numpy()})
+        fcos_cls_score_final, fcos_ctr_score_final, offsets, corr_fea = run_head(self.ban_head,
+                                                                                         c_out.numpy(),
+                                                                                         r_out.numpy())
+
+        fcos_bbox_final = get_box_full(cfg, self.ctr, offsets)
         fcos_cls_prob_final = self.sigmoid(fcos_cls_score_final)
         fcos_ctr_prob_final = self.sigmoid(fcos_ctr_score_final)
         fcos_score_final = fcos_cls_prob_final * fcos_ctr_prob_final

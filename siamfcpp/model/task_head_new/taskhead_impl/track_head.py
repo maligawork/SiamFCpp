@@ -98,7 +98,7 @@ class DenseboxHead(ModuleBase):
         cls_score = cls_score.permute(0, 2, 3, 1)
         cls_score = cls_score.reshape(cls_score.shape[0], -1, 1)
         # center-ness score
-        ctr_score = self.ctr_score_p5(cls)  
+        ctr_score = self.ctr_score_p5(cls)
         ctr_score = ctr_score.permute(0, 2, 3, 1)
         ctr_score = ctr_score.reshape(ctr_score.shape[0], -1, 1)
         # regression
