@@ -63,6 +63,7 @@ class ModelBuilder:
         #                                                                                  r_out.numpy())
 
         fcos_bbox_final = get_box_full(cfg, self.ctr, offsets)
+
         fcos_cls_prob_final = self.sigmoid(fcos_cls_score_final)
         fcos_ctr_prob_final = self.sigmoid(fcos_ctr_score_final)
         fcos_score_final = fcos_cls_prob_final * fcos_ctr_prob_final

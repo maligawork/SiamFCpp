@@ -1,5 +1,4 @@
 head/0000000_1.npy head/0000000_2.npy
-head/0000000_1.npy head/0000000_2.npy
 head/0000001_1.npy head/0000001_2.npy
 head/0000002_1.npy head/0000002_2.npy
 head/0000003_1.npy head/0000003_2.npy
