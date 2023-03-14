@@ -1,7 +1,7 @@
 import importlib
 from platforms.core.config import cfg
 
-PLATFORMS = ('onnx', 'onnx_one',  'onnx_head', 'opencv', 'tengine', 'ksnn', 'ksnn_head', 'ksnn_backbone')
+PLATFORMS = ('onnx', 'onnx_one',  'onnx_head', 'opencv', 'ksnn', 'ksnn_head')
 
 
 def get_tracker(platform: str):
