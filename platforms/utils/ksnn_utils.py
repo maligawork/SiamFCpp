@@ -21,8 +21,8 @@ def run_ksnn(ksnn_model, input, output_tensor=1):
 
 
 def run_head(model, inp1, inp2):
-    inp1 = inp1[0].permute(1, 2, 0).numpy()
-    inp2 = inp2[0].permute(1, 2, 0).numpy()
+    inp1 = inp1[0].transpose(1, 2, 0)
+    inp2 = inp2[0].transpose(1, 2, 0)
 
     outputs = model.nn_inference([inp1, inp2], platform='ONNX', output_tensor=4, reorder='2 1 0',
                                  output_format=output_format.OUT_FORMAT_FLOAT32)

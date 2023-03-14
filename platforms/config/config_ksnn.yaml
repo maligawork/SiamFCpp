@@ -1,6 +1,6 @@
 KSNN_MODELS_PATH : 'models/ksnn'
 KSNN_BACKBONE_INIT: 'backbone_init'
 KSNN_BACKBONE: 'backbone'
-KSNN_HEAD: 'head_5.onnx'
+KSNN_HEAD: 'head_5_one_1'
 
 

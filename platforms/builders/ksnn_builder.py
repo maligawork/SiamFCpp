@@ -50,9 +50,17 @@ class ModelBuilder:
         c_out = xcorr_depthwise(torch.Tensor(c_x), torch.Tensor(self.c_z_k))
         r_out = xcorr_depthwise(torch.Tensor(r_x), torch.Tensor(self.r_z_k))
 
-        fcos_cls_score_final, fcos_ctr_score_final, offsets, corr_fea = run_head(self.ban_head,
-                                                                                         c_out.numpy(),
-                                                                                         r_out.numpy())
+        out = torch.cat([c_out, r_out], dim=1)
+
+        fcos_cls_score_final, fcos_ctr_score_final, offsets, corr_fea = run_ksnn(self.ban_head, out.numpy(), output_tensor=4)
+        fcos_cls_score_final = fcos_cls_score_final.reshape(1, 289, 1).astype(np.float32)
+        fcos_ctr_score_final = fcos_ctr_score_final.reshape(1, 289, 1).astype(np.float32)
+        offsets = offsets.reshape(1, 4, 17, 17).astype(np.float32)
+        corr_fea = corr_fea.reshape(1, 256, 17, 17).astype(np.float32)
+
+        # fcos_cls_score_final, fcos_ctr_score_final, offsets, corr_fea = run_head(self.ban_head,
+        #                                                                                  c_out.numpy(),
+        #                                                                                  r_out.numpy())
 
         fcos_bbox_final = get_box_full(cfg, self.ctr, offsets)
         fcos_cls_prob_final = self.sigmoid(fcos_cls_score_final)
