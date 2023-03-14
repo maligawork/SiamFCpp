@@ -46,3 +46,8 @@ __C.window_influence = 0.21
 __C.test_lr = 0.52
 __C.min_w = 10
 __C.min_h = 10
+
+__C.total_stride = 8
+__C.score_offset = 87
+__C.si = 0.6790788769721985
+__C.bi = 1.6184018850326538

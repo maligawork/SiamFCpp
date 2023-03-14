@@ -11,6 +11,8 @@ from platforms.utils.onnx_utils import load_onnx, run_onnx
 from platforms.tracker.tracker_builder import build_tracker
 
 from siamfcpp.model.common_opr.common_block import xcorr_depthwise
+from siamfcpp.model.task_head_new.taskhead_impl.track_head import get_xy_ctr
+from siamfcpp.utils.box_utils import get_box_full
 
 
 class ModelBuilder:
@@ -31,6 +33,7 @@ class ModelBuilder:
         self.backbone_init = load_onnx(self.backbone_init_path, provider)
         self.backbone = load_onnx(self.backbone_path, provider)
         self.ban_head = load_onnx(self.head_path, provider)
+        self.ctr = get_xy_ctr(cfg.score_size, cfg.score_offset, cfg.total_stride)
 
     @staticmethod
     def sigmoid(x):
@@ -48,8 +51,10 @@ class ModelBuilder:
         r_out = xcorr_depthwise(torch.Tensor(r_x), torch.Tensor(self.r_z_k))
         out = torch.cat([c_out, r_out], dim=1)
 
-        fcos_cls_score_final, fcos_ctr_score_final, fcos_bbox_final, corr_fea = run_onnx(self.ban_head,
+        fcos_cls_score_final, fcos_ctr_score_final, offsets, corr_fea = run_onnx(self.ban_head,
                                                                                          {'input': out.numpy()})
+        fcos_bbox_final = get_box_full(cfg, self.ctr, offsets)
+
         fcos_cls_prob_final = self.sigmoid(fcos_cls_score_final)
         fcos_ctr_prob_final = self.sigmoid(fcos_ctr_score_final)
         fcos_score_final = fcos_cls_prob_final * fcos_ctr_prob_final

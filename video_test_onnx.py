@@ -22,8 +22,8 @@ def main(input_video: str, output_video: str, init_box: str, platform: str):
     while True:
         ret, img = cap.read()
 
-        # if idx > 300:
-        #     break
+        if idx > 300:
+            break
 
         if img is None:
             break
@@ -60,6 +60,6 @@ if __name__ == '__main__':
     parser.add_argument('--init_box', type=str, default='674 426 219 130', help='initial box coordinates xywh')
 
     args = parser.parse_args()
-    args.platform = 'ksnn'
+    args.platform = 'opencv'
 
     main(args.input_video, args.output_video, args.init_box, args.platform)

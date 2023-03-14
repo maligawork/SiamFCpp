@@ -76,7 +76,7 @@ class DenseboxHead(ModuleBase):
 
     def __init__(self):
         super(DenseboxHead, self).__init__()
-
+        
         self.bi = torch.nn.Parameter(torch.tensor(0.).type(torch.Tensor))
         self.si = torch.nn.Parameter(torch.tensor(1.).type(torch.Tensor))
 
@@ -123,7 +123,6 @@ class DenseboxHead(ModuleBase):
         ctr = get_xy_ctr(self.score_size, self.score_offset, self.total_stride)
         self.fm_ctr = ctr
         self.fm_ctr.require_grad = False
-
         self._make_conv3x3()
         self._make_conv_output()
         self._initialize_conv()
